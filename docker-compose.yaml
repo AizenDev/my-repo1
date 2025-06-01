@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  build:
+    image: maven:3.8.6-openjdk-11
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
+    working_dir: /app
+    command: mvn clean package -DskipTests
+
+  tomcat:
+    image: tomcat:9.0-jdk11-openjdk-slim
+    depends_on:
+      - build
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./target:/usr/local/tomcat/webapps
