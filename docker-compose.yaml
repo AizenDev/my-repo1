@@ -1,19 +1,22 @@
-version: '3'
+version: '3.8'
 
 services:
-  build:
-    image: maven:3.8.6-openjdk-11
+  builder:
+    build:
+      context: .
+      target: builder
+    image: my-java-app-builder
     volumes:
-      - ./src:/app/src
-      - ./pom.xml:/app/pom.xml
-    working_dir: /app
-    command: mvn clean package -DskipTests
+      - app_target:/app/target
 
   tomcat:
-    image: tomcat:9.0-jdk11-openjdk-slim
-    depends_on:
-      - build
+    image: tomcat:9.0-jdk11-openjdk
     ports:
       - "8080:8080"
     volumes:
-      - ./target:/usr/local/tomcat/webapps
+      - app_target:/usr/local/tomcat/webapps
+    depends_on:
+      - builder
+    restart: unless-stopped
+volumes:
+  app_target:
