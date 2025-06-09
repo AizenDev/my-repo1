@@ -18,5 +18,6 @@ services:
     depends_on:
       - builder
     restart: unless-stopped
+
 volumes:
   app_target:
